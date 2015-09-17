@@ -13,6 +13,8 @@ library("dplyr")
 library("lubridate")
 library("ggplot2")
 
+options(digit=10)
+
 fileName <- "activity"
 fileNameZip <- paste(fileName,".zip",sep = "")
 fileNameCsv <- paste(fileName,".csv", sep = "")
@@ -24,32 +26,41 @@ if (file.exists(fileNameZip)) {
   print("File is not present.")
 }
 data$date <- ymd(data$date)
+dataComp <- data[complete.cases(data),]
 ```
 
 
 ## What is mean total number of steps taken per day?
 ```{r}
-tmp <- array(tapply(data$steps, data$date, FUN=mean, na.rm=T))
-mdf <- cbind(as.data.frame(unique(data$date)),tmp)
-colnames(mdf) <- c("day","step")
-g1 <- ggplot(mdf, aes(x=day,y=step))
-g1 <- g1 + geom_line(color="blue")
-plot(g1)
+totStepDay <- array(tapply(dataComp$steps, dataComp$date, FUN=sum))
+
+avg <- round(mean(totStepDay),4)
+med <- round(median(totStepDay),4)
+hist(totStepDay,breaks = 50)
 ```
+
+**Mean Total Steps/Day** =`r format(avg,digits=10)`  
+**Median Total Steps/Day**=`r format(med,digits=10)`
 
 ## What is the average daily activity pattern?
 ```{r}
-tmp <- array(tapply(data$steps, data$interval, FUN=mean, na.rm=T))
-dap <- cbind(as.data.frame(unique(data$interval)),tmp)
+tmp <- array(tapply(dataComp$steps, dataComp$interval, FUN=mean))
+dap <- cbind(as.data.frame(unique(dataComp$interval)),tmp)
 colnames(dap) <- c("interval","step")
 g1 <- ggplot(dap, aes(x=interval,y=step))
 g1 <- g1 + geom_line(color="blue")
 plot(g1)
+```
 
+Interval with maximum steps in average:
+```{r}
+dap[dap$step==max(dap$step),"interval"]
 ```
 
 
 ## Imputing missing values
+
+In the original data are present **`r sum(is.na(data$step))`** observations with null steps.
 
 
 
