@@ -1,21 +1,52 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
+author: Filippo Quarta
 output: 
-  html_document:
-    keep_md: true
+html_document:
+keep_md: true
 ---
 
 
 ## Loading and preprocessing the data
+```{r}
+library("dplyr")
+library("lubridate")
+library("ggplot2")
 
+fileName <- "activity"
+fileNameZip <- paste(fileName,".zip",sep = "")
+fileNameCsv <- paste(fileName,".csv", sep = "")
+data <- NULL
+if (file.exists(fileNameZip)) {
+  unzip(fileNameZip)
+  data <- read.csv(fileNameCsv)
+} else {
+  print("File is not present.")
+}
+data$date <- ymd(data$date)
+```
 
 
 ## What is mean total number of steps taken per day?
-
-
+```{r}
+tmp <- array(tapply(data$steps, data$date, FUN=mean, na.rm=T))
+mdf <- cbind(as.data.frame(unique(data$date)),tmp)
+colnames(mdf) <- c("day","step")
+g1 <- ggplot(mdf, aes(x=day,y=step))
+g1 <- g1 + geom_line(color="blue")
+plot(g1)
+```
 
 ## What is the average daily activity pattern?
+```{r}
+tmp <- array(tapply(data$steps, data$interval, FUN=mean, na.rm=T))
+dap <- cbind(as.data.frame(unique(data$interval)),tmp)
+colnames(dap) <- c("interval","step")
+g1 <- ggplot(dap, aes(x=interval,y=step))
+g1 <- g1 + geom_line(color="blue")
+plot(g1)
 
+```
 
 
 ## Imputing missing values
