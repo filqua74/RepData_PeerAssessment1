@@ -6,6 +6,8 @@ html_document:
 keep_md: true
 ---
 
+This Rmarkdown document contains the solution for Peer Assessment 1 project.  
+
 
 ## Loading and preprocessing the data
 ```{r}
@@ -38,7 +40,7 @@ colnames(tmp) <- c("date","steps")
 
 avg <- mean(tmp$steps)
 med <- median(tmp$steps)
-hist(tmp$step,breaks=10, xlab = "Steps", main="Histogram of total steps per day")
+hist(tmp$step,breaks=10, col="yellow", xlab = "Steps", main="Histogram of total steps per day")
 ```
 
 **Mean Total Steps/Day** =`r format(avg,digits=10)`  
@@ -80,7 +82,7 @@ colnames(tmp) <- c("date","steps")
 
 avg <- mean(tmp$steps)
 med <- median(tmp$steps)
-hist(tmp$step,breaks = 10,xlab = "Steps", main="Histogram of total steps per day")
+hist(tmp$step,breaks = 10,col="yellow",xlab = "Steps", main="Histogram of total steps per day")
 ```
 
 **Mean Total Steps/Day** =`r format(avg,digits=10)`  
@@ -98,7 +100,7 @@ tmp <- rbind(tmp$weekday,tmp$weekend)
 colnames(tmp) <- c("interval","daytype","steps")
 
 sp <- ggplot(tmp, aes(y=steps, x=interval))
-sp <- sp + geom_line()
+sp <- sp + geom_line(color="blue")
 sp <- sp + facet_grid(daytype ~ .)
 
 plot(sp)
